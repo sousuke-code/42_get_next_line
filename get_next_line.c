@@ -13,15 +13,19 @@ char *get_next_line(int fd)
 {
     size_t buff_end;
     char *buff;
+    int i;
+    i = 0;
     buff = malloc(BUFF_SIZE);
     if (!buff)
       return NULL;
-    while(read(fd, buff,1) > 0)
+    while(read(fd, &buff[i],1) > 0)
     {
-      if (*buff == '\n')
+      if (buff[i] == '\n')
        break;
-      buff++;
+      i++;
     }
+
+    buff[i+1] = '\0';
     return buff;
 }
 
