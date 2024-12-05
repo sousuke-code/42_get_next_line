@@ -9,7 +9,7 @@
 #define BUFF_SIZE 246
 
 
-char *get_next_line(int fd)
+char *get_next_line(int fd) //一行分の読み込み
 {
     size_t buff_end;
     char *buff;
@@ -18,7 +18,7 @@ char *get_next_line(int fd)
     buff = malloc(BUFF_SIZE);
     if (!buff)
       return NULL;
-    while(read(fd, &buff[i],1) > 0)
+    while(read(fd, &buff[i],1) > 0) //一文字読み込みではなく一行読み込みに変更する必要あり
     {
       if (buff[i] == '\n')
        break;
