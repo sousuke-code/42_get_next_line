@@ -8,8 +8,22 @@
 
 #define BUFF_SIZE 246
 
+int find_next_line(char *buff, int size)
+{
+  int i;
+  i = 0;
+  while (i < size)
+  {
+    if (buff[i] == '\n')
+      return i;
+    i++;
+  }
+  return -1; //次の改行が見つからない場合
+}
 
-char *get_next_line(int fd) //一行分の読み込み
+
+
+char *get_next_line(int fd) //全ての読み込みを行う
 {
     size_t buff_end;
     char *buff;
@@ -18,14 +32,7 @@ char *get_next_line(int fd) //一行分の読み込み
     buff = malloc(BUFF_SIZE);
     if (!buff)
       return NULL;
-    while(read(fd, &buff[i],1) > 0) //一文字読み込みではなく一行読み込みに変更する必要あり
-    {
-      if (buff[i] == '\n')
-       break;
-      i++;
-    }
-
-    buff[i+1] = '\0';
+    read(fd, buff, BUFF_SIZE); //buffにBUFF_SIZE分だけが読み込まれている状態
     return buff;
 }
 
