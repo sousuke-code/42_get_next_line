@@ -129,7 +129,6 @@ char *ft_substr(char const *s, unsigned int start, size_t len)
     if (ans == NULL) {
         return NULL;
     }
-    
     unsigned int s_len;
     unsigned int index;
     unsigned int  i;
@@ -157,8 +156,6 @@ char *ft_substr(char const *s, unsigned int start, size_t len)
         s++;
     }
     ans[i] = '\0';
-    
-
     return ans;
 
 }
@@ -175,7 +172,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	str = malloc(len);
 	if (str == NULL)
 		return (NULL);
-	ft_strlcpy(str, (char *)s1, len);
+	ft_strlcpy(str, (char *)s1, ft_strlen((char *)s1) + 1);
 	ft_strlcat(str, (char *)s2, len);
 	return (str);
 }
