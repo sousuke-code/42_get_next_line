@@ -8,158 +8,64 @@
 
 #define BUFF_SIZE 246
 
-int ft_strlen(const char *c)
+#include "get_next_line.h"
+
+char *_fill_line_buffer(int fd, char *left_c, char *buffer)
 {
-    size_t count;
+  int bytes_read;
 
-    count = 0;
-    
-    while(*c != '\0')
-    {
-     count++;
-     c++;
-    }
+  while((bytes_read = read(fd, buffer, BUFF_SIZE)) >= 0 ) {
+  if (bytes_read <= 0 )
+   break;
+  if(left_c) { //前回の呼び出し時に文字列の余があった場合
+    left_c = ft_strjoin(left_c, buffer);
+  }else {
+    left_c = ft_strdup(buffer);
+  }
 
-    return count;
+  if (ft_strchr(buffer, '\n'))
+    break;
+  }
+  return left_c;
 }
 
-
-char *ft_strdup(const char *s1)
+char *_set_line(char *line_buffer)
 {
-    char *p;
-    int i;
-    int len;
-    len = 0;
-    i = 0;
+  char *line;
 
-    len = ft_strlen((char *)s1);
-    p = (char *)malloc(len+1);
-    if (p ==NULL){
-        return NULL;
-    }
+  //次の読み込みに備えて改行文字以降にポインタを移動させる。
+  int i;
+  while(line_buffer[i] != '\n' && line_buffer[i] != '\0'){
+    i++;
+  }
+  if (line_buffer[i] == '\n') {
+    line = ft_strdup(line_buffer + i + 1);
+    line_buffer[i] = '\0';
+  }
 
-    while(*s1 != '\0'){
-        p[i] = *s1;
-        i++;
-        s1++;
-    }
-    p[len] = '\0';
-    return p;
-}
-
-
-size_t ft_strlcat(char *dst, const char *src, size_t dstsize)
-{
-    
-    //dstの末尾に最大dstsize - strlen(dst) -1 文字を追加する
-    //オリジナルのdst文字列がdstsizeより長くなかったなら、ヌル文字で終了させる。
-    size_t dst_len; 
-    size_t src_len; 
-    size_t max_cpy;
-    size_t n;
-    n = 0 ;
-
-    dst_len = ft_strlen(dst);
-    src_len = ft_strlen((char *)src);
-    if (dstsize <= dst_len)
-     return (dstsize + src_len);
-
-    max_cpy = dstsize - dst_len -1;
-    while ( n < max_cpy && src[n] != '\0'){
-        dst[dst_len+n] = src[n];
-        n++;
-    }
-
-    dst[dst_len + n] = '\0';
-
-    return (dst_len + src_len);
-
-}
-
-
-size_t ft_strlcpy(char *dst, const char *src, size_t size)
-{
-    size_t n;
-    n = 0;
-    while (src[n])
-    { 
-      n++;  
-    }
-    if (size == 0) {
-      return n;
-    }
-    size_t i = 0; 
-    while (i  < size -1 && *src != '\0')
-    {
-        *dst = *src;
-        dst++;
-        src++;
-        i++;
-    }
-
-    *dst = '\0'; 
-    return n;
-}
-
-
-
-
-
-
-char	*ft_strjoin(char const *s1, char const *s2)
-{
-	size_t	len;
-	char	*str;
-
-	len = ft_strlen((char *)s1) + ft_strlen((char *)s2) + 1;
-	str = malloc(len);
-	if (str == NULL)
-		return (NULL);
-	ft_strlcpy(str, (char *)s1, len);
-	ft_strlcat(str, (char *)s2, len);
-	return (str);
-}
-
-
-
-char *extra_line(char *buff) //余分な行を取り除く
-{
-    int i;
-    char *buff_line;
-    i = 0;
-    while (buff[i] != '\n')
-    {
-        i++;
-    }
-    buff_line = malloc(i+1);
-    ft_strlcpy(buff_line, buff, i+1);
-    return buff_line;
+  return line;
 }
 
 
 char *get_next_line(int fd) //全ての読み込みを行う
 {
     static char *reminder;
-    char *buff;
+    char *buffer;
     char *line;
     ssize_t bytes_read;
     char *return_buff;
 
-    buff = malloc(BUFF_SIZE + 1);
-    if (!buff)
+    if (fd < 0 || BUFF_SIZE <= 0)
+        return NULL;
+
+    buffer = malloc(BUFF_SIZE + 1);
+    if (!buffer)
       return NULL;
 
-    if(!reminder) reminder = ft_strdup("");
-
-    while( (bytes_read = read(fd, buff, BUFF_SIZE)) > 0) {
-      buff[bytes_read] = '\0';
-      char *tmp = reminder;
-      reminder = ft_strjoin(reminder, buff);
-      free(tmp);
-    }
-    free(buff);
-    
-    line = extra_line(reminder);
+    reminder = _fill_line_buffer(fd, reminder, buffer);
+    free(buffer);
+    line = ft_strdup(reminder);
+    reminder = _set_line(reminder);
     return line;
 }
 
@@ -173,7 +79,4 @@ int main(void)
       free(line);
     }
     close(fd);
-    /* ループ内でget_next_lineを使用していくことで各行の文字列が読み込まれるような動作になる。*/
-    /* 戻り値がファイルから読み取った一行分になる*/
-    /* 一行の区切りを\nで認識させてそこまで一文字ずつループで読み込んでいけば行けるような気がする。*/
 }
