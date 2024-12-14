@@ -36,7 +36,6 @@ char *_fill_line_buffer(int fd, char *reminder, char *buffer)
 
 char *_set_line(char *line_buffer)
 {
-  char *tmp;
   if(!line_buffer || !line_buffer[0])
     return NULL;
   char *line;
@@ -49,7 +48,7 @@ char *_set_line(char *line_buffer)
   
   if (line_buffer[i] == '\n') { 
     line = ft_substr(line_buffer,i+1, ft_strlen(line_buffer)+1);
-    line_buffer[i] = '\0';
+    line_buffer[i+1] = '\0';
   } else {
     return NULL;
   }
@@ -63,7 +62,6 @@ char *get_next_line(int fd) //全ての読み込みを行う
     static char *reminder;
     char *buffer;
     char *line; //戻り値として返す一行分の文字列
-    static int i =1;
 
     if (fd < 0 || BUFF_SIZE <= 0)
         return NULL;
@@ -72,28 +70,27 @@ char *get_next_line(int fd) //全ての読み込みを行う
       return NULL;
     reminder = _fill_line_buffer(fd, reminder, buffer);
     free(buffer);
-    if(!reminder ) {
+    if(!reminder || reminder[0] == '\0' ) {
       free(reminder);
       reminder = NULL;
       return NULL;
     }
     line = ft_strdup(reminder); //reminderのコピー
     reminder = _set_line(line);
-    i++;
     return line;
 }
 
-int main(void)
-{
-    int fd;
-    char *line;
-    int i;
-    i = 1;
-    fd = open("./test.txt", O_RDONLY);
-    while((line = get_next_line(fd)) != NULL ) {
-      printf("%d回目の結果: %s\n",i, line);
-      i++;
-      free(line);
-    }
-    close(fd);
-}
+// int main(void)
+// {
+//     int fd;
+//     char *line;
+//     int i;
+//     i = 1;
+//     fd = open("./test.txt", O_RDONLY);
+//     while((line = get_next_line(fd)) != NULL ) {
+//       printf("%d回目の結果: %s\n",i, line);
+//       i++;
+//       free(line);
+//     }
+//     close(fd);
+// }
