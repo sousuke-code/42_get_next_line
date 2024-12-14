@@ -10,3 +10,20 @@
 * read = -1 => 読み込みエラー
 * read = 0 => EOFに達した
 * 二回目の　readでは一回目に読み込まれたところから、さらに読み込みが始まる。二回目以降も初めから読み込まれるわけではない
+
+
+
+// int main(void)
+// {
+//     int fd;
+//     char *line;
+//     int i;
+//     i = 1;
+//     fd = open("./test.txt", O_RDONLY);
+//     while((line = get_next_line(fd)) != NULL ) {
+//       printf("%d回目の結果: %s\n",i, line);
+//       i++;
+//       free(line);
+//     }
+//     close(fd);
+// }

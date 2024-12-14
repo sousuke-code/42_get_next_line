@@ -1,96 +1,108 @@
-#include<stdio.h>
-#include<string.h>
-#include<unistd.h>
-#include<sys/types.h>
-#include<sys/stat.h>
-#include<fcntl.h>
-#include<stdlib.h>
-
-#define BUFF_SIZE 1
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sousuke <sousuke@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/15 01:50:44 by sousuke           #+#    #+#             */
+/*   Updated: 2024/12/15 02:01:22 by sousuke          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char *_fill_line_buffer(int fd, char *reminder, char *buffer)
+char	*ft_strchr(const char *s, int c)
 {
-  ssize_t bytes_read;
-
-  while((bytes_read = read(fd, buffer, BUFF_SIZE)) > 0 ) {
-  buffer[bytes_read] = '\0';
-  if(reminder) { 
-    char *tmp = reminder;
-    reminder = ft_strjoin(tmp, buffer);
-    free(tmp);
-  }else{
-    reminder = ft_strdup(buffer);
-  }
-  if (ft_strchr(buffer, '\n'))
-    break;
-  }
-
-  if (bytes_read == 0){
-        return reminder;
-  }
-  
-  return reminder;
+	if (s == NULL)
+		return (NULL);
+	while (*s != '\0')
+	{
+		if ((unsigned char)*s == (unsigned char)c)
+		{
+			return ((char *)s);
+		}
+		s++;
+	}
+	if (c == '\0')
+	{
+		return ((char *)s);
+	}
+	return (NULL);
 }
 
-char *_set_line(char *line_buffer)
+char	*_fill_line_buffer(int fd, char *reminder, char *buffer)
 {
-  if(!line_buffer || !line_buffer[0])
-    return NULL;
-  char *line;
-  int i;
-  i = 0;
+	ssize_t	bytes_read;
+	char	*tmp;
 
-  while(line_buffer[i] != '\n' && line_buffer[i] != '\0'){
-    i++;
-  }
-  
-  if (line_buffer[i] == '\n') { 
-    line = ft_substr(line_buffer,i+1, ft_strlen(line_buffer)+1);
-    line_buffer[i+1] = '\0';
-  } else {
-    return NULL;
-  }
-
-  return line; //　戻り値としては改行文字以降の文字列
+	bytes_read = 1;
+	while (bytes_read >= 1)
+	{
+		bytes_read = read(fd, buffer, BUFFER_SIZE);
+		if (bytes_read <= 0)
+			break ;
+		buffer[bytes_read] = '\0';
+		if (reminder)
+		{
+			tmp = reminder;
+			reminder = ft_strjoin(tmp, buffer);
+			free(tmp);
+		}
+		else
+			reminder = ft_strdup(buffer);
+		if (ft_strchr(buffer, '\n'))
+			break ;
+	}
+	if (bytes_read < 0)
+		reminder = NULL;
+	return (reminder);
 }
 
-
-char *get_next_line(int fd) //全ての読み込みを行う
+char	*_set_line(char *line_buffer)
 {
-    static char *reminder;
-    char *buffer;
-    char *line; //戻り値として返す一行分の文字列
+	char	*line;
+	int		i;
 
-    if (fd < 0 || BUFF_SIZE <= 0)
-        return NULL;
-    buffer = malloc(BUFF_SIZE + 1);
-    if (!buffer)
-      return NULL;
-    reminder = _fill_line_buffer(fd, reminder, buffer);
-    free(buffer);
-    if(!reminder || reminder[0] == '\0' ) {
-      free(reminder);
-      reminder = NULL;
-      return NULL;
-    }
-    line = ft_strdup(reminder); //reminderのコピー
-    reminder = _set_line(line);
-    return line;
+	if (!line_buffer || !line_buffer[0])
+		return (NULL);
+	i = 0;
+	while (line_buffer[i] != '\n' && line_buffer[i] != '\0')
+	{
+		i++;
+	}
+	if (line_buffer[i] == '\n')
+	{
+		line = ft_strdup(&line_buffer[i + 1]);
+		line_buffer[i + 1] = '\0';
+		return (line);
+	}
+	return (NULL);
 }
 
-// int main(void)
-// {
-//     int fd;
-//     char *line;
-//     int i;
-//     i = 1;
-//     fd = open("./test.txt", O_RDONLY);
-//     while((line = get_next_line(fd)) != NULL ) {
-//       printf("%d回目の結果: %s\n",i, line);
-//       i++;
-//       free(line);
-//     }
-//     close(fd);
-// }
+char	*get_next_line(int fd)
+{
+	static char	*reminder;
+	char		*buffer;
+	char		*line;
+	char		*tmp;
+
+	if (fd < 0 || BUFFER_SIZE <= 0 || BUFFER_SIZE >= INT_MAX)
+		return (NULL);
+	buffer = malloc((long)BUFFER_SIZE + 1);
+	if (!buffer)
+		return (NULL);
+	reminder = _fill_line_buffer(fd, reminder, buffer);
+	free(buffer);
+	if (!reminder || reminder[0] == '\0')
+	{
+		free(reminder);
+		reminder = NULL;
+		return (NULL);
+	}
+	line = ft_strdup(reminder);
+	tmp = reminder;
+	reminder = _set_line(line);
+	free(tmp);
+	return (line);
+}
