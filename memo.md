@@ -13,17 +13,17 @@
 
 
 
-// int main(void)
-// {
-//     int fd;
-//     char *line;
-//     int i;
-//     i = 1;
-//     fd = open("./test.txt", O_RDONLY);
-//     while((line = get_next_line(fd)) != NULL ) {
-//       printf("%d回目の結果: %s\n",i, line);
-//       i++;
-//       free(line);
-//     }
-//     close(fd);
-// }
+int main(void)
+{
+    int fd;
+    char *line;
+    int i;
+    i = 1;
+    fd = open("./test.txt", O_RDONLY);
+    while((line = get_next_line(fd)) != NULL ) {
+      printf("%d回目の結果: %s\n",i, line);
+      i++;
+      free(line);
+    }
+    close(fd);
+}
