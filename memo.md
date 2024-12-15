@@ -272,3 +272,24 @@ char *get_next_line(int fd)
     line = _set_line(&reminder);
     return (line);
 }
+
+* bonus part
+
+char *get_next_line(int fd)
+{
+    static char *reminders[MAX_FD];
+    char *buffer;
+    char *line;
+
+    if (fd < 0 || fd >= MAX_FD || BUFFER_SIZE <= 0)
+        return (NULL);
+    buffer = malloc(BUFFER_SIZE + 1);
+    if (!buffer)
+        return (NULL);
+    reminders[fd] = _fill_line_buffer(fd, reminders[fd], buffer);
+    free(buffer);
+    if (!reminders[fd])
+        return (NULL);
+    line = _set_line(&reminders[fd]);
+    return (line);
+}
