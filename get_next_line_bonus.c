@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sosmiyat <sosmiyat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/15 16:14:34 by sosmiyat          #+#    #+#             */
-/*   Updated: 2024/12/15 16:23:11 by sosmiyat         ###   ########.fr       */
+/*   Created: 2024/12/15 14:55:14 by sosmiyat          #+#    #+#             */
+/*   Updated: 2024/12/15 16:22:53 by sosmiyat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 static char	*ft_strchr(const char *s, int c)
 {
@@ -82,26 +82,26 @@ static char	*sep_line_buffer_to_line(char *line_buffer)
 
 char	*get_next_line(int fd)
 {
-	static char	*reminder;
+	static char	*reminder[FOPEN_MAX];
 	char		*buffer;
 	char		*line;
 	char		*tmp;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || fd > FOPEN_MAX)
 		return (NULL);
 	buffer = malloc((long)BUFFER_SIZE + 1);
 	if (!buffer)
 		return (NULL);
-	reminder = make_line_buffer(fd, reminder, buffer);
+	reminder[fd] = make_line_buffer(fd, reminder[fd], buffer);
 	free(buffer);
-	if (!reminder || reminder[0] == '\0')
+	if (!reminder[fd] || reminder[fd][0] == '\0')
 	{
-		free(reminder);
+		free(reminder[fd]);
 		return (NULL);
 	}
-	line = ft_strdup(reminder);
-	tmp = reminder;
-	reminder = sep_line_buffer_to_line(line);
+	line = ft_strdup(reminder[fd]);
+	tmp = reminder[fd];
+	reminder[fd] = sep_line_buffer_to_line(line);
 	free(tmp);
 	return (line);
 }

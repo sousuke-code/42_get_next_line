@@ -11,6 +11,9 @@
 * read = 0 => EOFに達した
 * 二回目の　readでは一回目に読み込まれたところから、さらに読み込みが始まる。二回目以降も初めから読み込まれるわけではない
 
+* 複数ファイルの読み子みをbonus課題では行う。処理の中身のロジックについては変更する部分は特にないため、readするところはbufferとして保持しておく値を変更させていけばうまくいけるのではないか
+* reminderとして保持する値を単一の文字列としてではなく、二次元配列として保持させることができたら、行けそうな気がする。
+
 
 
 int main(void)
@@ -28,8 +31,35 @@ int main(void)
     close(fd);
 }
 
+bonusパート
 
 
+int	main(void)
+{
+	int		fd[5];
+	char	*line;
+	int		i;
+	int		j;
+
+	j = 0;
+	i = 1;
+	fd[0] = open("./test1.txt", O_RDONLY);
+	fd[1] = open("./test2.txt", O_RDONLY);
+	fd[3] = open("./test3.txt", O_RDONLY);
+	fd[4] = open("./test4.txt", O_RDONLY);
+	while (j <= 4)
+	{
+		while ((line = get_next_line(fd[j])) != NULL)
+		{
+			printf("%d行目の結果: %s\n", i, line);
+			i++;
+			free(line);
+		}
+		printf("---%d回目のファイル読み込み終了---\n", j);
+		close(fd[j]);
+		j++;
+	}
+}
 
 
 あなた:

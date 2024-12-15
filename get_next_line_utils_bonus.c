@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*   get_next_line_utils_bonus.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sosmiyat <sosmiyat@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/15 16:14:23 by sosmiyat          #+#    #+#             */
-/*   Updated: 2024/12/15 16:15:56 by sosmiyat         ###   ########.fr       */
+/*   Created: 2024/12/15 14:56:46 by sosmiyat          #+#    #+#             */
+/*   Updated: 2024/12/15 16:16:45 by sosmiyat         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 size_t	ft_strlen(const char *c)
 {
