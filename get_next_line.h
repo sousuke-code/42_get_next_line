@@ -6,7 +6,7 @@
 /*   By: sousuke <sousuke@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/15 01:47:26 by sousuke           #+#    #+#             */
-/*   Updated: 2024/12/15 10:08:02 by sousuke          ###   ########.fr       */
+/*   Updated: 2024/12/15 12:06:32 by sousuke          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ char	*save_reminder(char *reminder);
 char	*get_next_line(int fd);
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE OPEN_MAX
+#  define BUFFER_SIZE 1024
 # endif
 
 #endif
