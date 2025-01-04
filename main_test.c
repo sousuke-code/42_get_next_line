@@ -1,20 +1,21 @@
 
 // *mandantory
-// include <stdio.h>
+// #include<stdio.h>
 // int main()
 // {
 //     int fd;
 //     char *line;
 //     int i;
 //     i = 1;
-//     fd = open("", O_RDONLY);
+//     fd = open("test1.txt", O_RDONLY);
 //     while((line = get_next_line(fd)) != NULL) {
 //         printf("%d回目の結果: %s\n", i, line);
 //         i++;
 //         free(line);
 //     }
-//     close fd
+//     close(fd);
 // }
+
 
 
 
